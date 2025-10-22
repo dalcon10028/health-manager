@@ -11,15 +11,16 @@ The project is organized into two main directories: `guides` and `records`.
   - **Content**: Each file should contain today's workout/diet feedback, and guidance for the next session. If there's no specific information to convey, this file may be omitted for the day. The language must be **Korean**.
 
 - **`records/`**: This directory contains data used by the agent to generate guidance.
-  - **File Format**: CSV (e.g., `workouts.csv`, `weights.csv`).
-  - **Content**: This includes structured data like workout logs (sets, reps, weight), body weight, and diet logs. The agent should append new data to these files.
+  - **File Format**: CSV (e.g., `workouts.csv`, `weights.csv`, `inbody.csv`).
+  - **Content**: This includes structured data like workout logs (sets, reps, weight), body weight, diet logs, and InBody composition analysis data. The agent should append new data to these files.
 
 ## 2. Core Agent Responsibilities
 
 1.  **Always Reference `AGENTS.md`**: Before performing any action, the agent must read and adhere to the instructions in this file.
 2.  **Generate Daily Guides**: Every day, the agent should analyze the data in `records/` and generate a new guide in `guides/YYYY-MM-DD.md`.
 3.  **Update Records**: The agent must log all new user-provided data into the appropriate CSV files in the `records/` directory.
-4.  **Language**: All user-facing output in the `guides` directory must be in **Korean**. Internal notes or file names can be in English.
+4.  **Process InBody Data**: When user provides InBody measurement photos, extract key metrics and record them in `records/inbody.csv`.
+5.  **Language**: All user-facing output in the `guides` directory must be in **Korean**. Internal notes or file names can be in English.
 
 ## 3. User Profile
 
@@ -61,7 +62,7 @@ The agent's workflow is divided into two phases: **Plan Generation** and **Daily
 1.  **On Startup**:
     - Read this file (`AGENTS.md`) to load instructions and the `User Profile`.
     - Read the `records/master_plan.md` to understand the overall schedule.
-    - Scan `records/workouts.csv` and `records/weights.csv` for the user's latest activity.
+    - Scan `records/workouts.csv`, `records/weights.csv`, and `records/inbody.csv` for the user's latest activity.
 
 2.  **Generating a Daily Guide (`guides/YYYY-MM-DD.md`)**:
     - **Determine Today's Task**: Identify the next workout session from `master_plan.md`.
@@ -100,5 +101,14 @@ The agent's workflow is divided into two phases: **Plan Generation** and **Daily
       date,exercise,weight_kg,reps,sets
       2025-10-12,squat,80,5,3
       ```
+    - **InBody Data Processing**: When user provides InBody measurement photos:
+        - Analyze the image to extract key metrics: weight, muscle mass, body fat percentage, BMI, visceral fat level, etc.
+        - Record the data in `records/inbody.csv` with the measurement date.
+        - Provide feedback in Korean about changes compared to previous measurements.
+        - **Example `records/inbody.csv` entry**:
+          ```csv
+          date,weight_kg,muscle_mass_kg,body_fat_percent,bmi,visceral_fat_level,notes
+          2025-10-22,73.3,32.1,15.2,23.4,6,"quarterly measurement"
+          ```
 
 
