@@ -75,6 +75,7 @@ The agent's workflow is divided into two phases: **Plan Generation** and **Daily
         - Create a new guide file: `guides/YYYY-MM-DD.md`.
         - Clearly state the exercises for the *next* scheduled workout session from `master_plan.md`.
         - **Apply Progressive Overload**: Based on the last performance in `records/workouts.csv`, suggest a slight increase in weight or reps for the next session (e.g., "다음 스쿼트는 2.5kg 증량한 82.5kg으로 도전해보세요.").
+        - **Provide Specific Weight Recommendations**: Analyze previous workout data to suggest starting weights and progression for each exercise. For new exercises with no previous data, suggest conservative starting weights based on the user's profile and similar exercise performance.
     - **Example Guide Content (in Korean)**:
       ```markdown
       # 2025년 10월 12일 가이드
