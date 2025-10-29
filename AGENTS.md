@@ -17,16 +17,16 @@ The project is organized into two main directories: `src/content/posts` and `rec
     ---
     ```
 
-- **`records/`**: This directory contains data used by the agent to generate guidance.
+- **`public/records/`**: This directory contains data used by the agent to generate guidance.
   - **File Format**: CSV (e.g., `workouts.csv`, `weights.csv`, `inbody.csv`).
   - **Content**: This includes structured data like workout logs (sets, reps, weight), body weight, diet logs, and InBody composition analysis data. The agent should append new data to these files.
 
 ## 2. Core Agent Responsibilities
 
 1.  **Always Reference `AGENTS.md`**: Before performing any action, the agent must read and adhere to the instructions in this file.
-2.  **Generate Daily Guides**: Every day, the agent should analyze the data in `records/` and generate a new guide in `src/content/posts/YYYY-MM-DD.md` with proper Astro frontmatter.
-3.  **Update Records**: The agent must log all new user-provided data into the appropriate CSV files in the `records/` directory.
-4.  **Process InBody Data**: When user provides InBody measurement photos, extract key metrics and record them in `records/inbody.csv`.
+2.  **Generate Daily Guides**: Every day, the agent should analyze the data in `public/records/` and generate a new guide in `src/content/posts/YYYY-MM-DD.md` with proper Astro frontmatter.
+3.  **Update Records**: The agent must log all new user-provided data into the appropriate CSV files in the `public/records/` directory.
+4.  **Process InBody Data**: When user provides InBody measurement photos, extract key metrics and record them in `public/records/inbody.csv`.
 5.  **Language**: All user-facing output in the `guides` directory must be in **Korean**. Internal notes or file names can be in English.
 
 ## 3. User Profile
@@ -57,9 +57,9 @@ The agent's workflow is divided into two phases: **Plan Generation** and **Daily
 
 ### Phase 1: Plan Generation (Run once or when requested)
 
-1.  **Check for Plan**: Look for `records/master_plan.md`.
+1.  **Check for Plan**: Look for `public/records/master_plan.md`.
 2.  **Generate if Missing**: If it doesn't exist, create a long-term workout schedule based on the `User Profile`.
-    -   **Name**: `records/master_plan.md`.
+    -   **Name**: `public/records/master_plan.md`.
     -   **Content**: Create a structured, multi-week plan (e.g., 4 weeks, 12 sessions). The plan must be varied and include principles of progressive overload.
     -   **Format**: Use a Markdown table with columns: `Session`, `Day`, `Exercise`, `Target_Sets`, `Target_Reps`, `Rest_sec`.
     -   **Notify User**: Inform the user that the master plan has been created.
@@ -68,20 +68,20 @@ The agent's workflow is divided into two phases: **Plan Generation** and **Daily
 
 1.  **On Startup**:
     - Read this file (`AGENTS.md`) to load instructions and the `User Profile`.
-    - Read the `records/master_plan.md` to understand the overall schedule.
-    - Scan `records/workouts.csv`, `records/weights.csv`, and `records/inbody.csv` for the user's latest activity.
+    - Read the `public/records/master_plan.md` to understand the overall schedule.
+    - Scan `public/records/workouts.csv`, `public/records/weights.csv`, and `public/records/inbody.csv` for the user's latest activity.
 
 2.  **Generating a Daily Guide (`src/content/posts/YYYY-MM-DD.md`)**:
     - **Determine Today's Task**: Identify the next workout session from `master_plan.md`.
     - **Analyze & Give Feedback (Korean)**:
-        - Review the last workout data from `records/workouts.csv`.
+        - Review the last workout data from `public/records/workouts.csv`.
         - Compare it to the `master_plan.md`.
         - Provide positive feedback and constructive comments (e.g., "지난번 스쿼트 목표 무게를 달성하셨네요. 훌륭합니다!").
         - Consider the user's sleep pattern from the profile, especially after late nights.
     - **Provide Next Steps (Korean)**:
         - Create a new guide file: `src/content/posts/YYYY-MM-DD.md` with proper Astro frontmatter.
         - Clearly state the exercises for the *next* scheduled workout session from `master_plan.md`.
-        - **Apply Progressive Overload**: Based on the last performance in `records/workouts.csv`, suggest a slight increase in weight or reps for the next session (e.g., "다음 스쿼트는 2.5kg 증량한 82.5kg으로 도전해보세요.").
+        - **Apply Progressive Overload**: Based on the last performance in `public/records/workouts.csv`, suggest a slight increase in weight or reps for the next session (e.g., "다음 스쿼트는 2.5kg 증량한 82.5kg으로 도전해보세요.").
         - **Provide Specific Weight Recommendations**: Analyze previous workout data to suggest starting weights and progression for each exercise. For new exercises with no previous data, suggest conservative starting weights based on the user's profile and similar exercise performance.
     - **Example Guide Content (in Korean)**:
       ```markdown
@@ -108,17 +108,17 @@ The agent's workflow is divided into two phases: **Plan Generation** and **Daily
       ```
 
 3.  **Recording Data**:
-    - When the user provides new data (e.g., "오늘 스쿼트 80kg 5회 3세트 했어"), append it to the relevant CSV file in the `records/` directory.
-    - **Example `records/workouts.csv` entry**:
+    - When the user provides new data (e.g., "오늘 스쿼트 80kg 5회 3세트 했어"), append it to the relevant CSV file in the `public/records/` directory.
+    - **Example `public/records/workouts.csv` entry**:
       ```csv
       date,exercise,weight_kg,reps,sets
       2025-10-12,squat,80,5,3
       ```
     - **InBody Data Processing**: When user provides InBody measurement photos:
         - Analyze the image to extract key metrics: weight, muscle mass, body fat percentage, BMI, visceral fat level, etc.
-        - Record the data in `records/inbody.csv` with the measurement date.
+        - Record the data in `public/records/inbody.csv` with the measurement date.
         - Provide feedback in Korean about changes compared to previous measurements.
-        - **Example `records/inbody.csv` entry**:
+        - **Example `public/records/inbody.csv` entry**:
           ```csv
           date,weight_kg,muscle_mass_kg,body_fat_percent,bmi,visceral_fat_level,notes
           2025-10-22,73.3,32.1,15.2,23.4,6,"quarterly measurement"
