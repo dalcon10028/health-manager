@@ -35,11 +35,17 @@ const { class: className } = Astro.props
         }
       })
 
-      // Convert to cal-heatmap format
-      return Object.entries(workoutsByDate).map(([date, count]) => ({
-        date: Math.floor(new Date(date).getTime() / 1000),
-        value: count
-      }))
+      // Convert to cal-heatmap format (timestamp in seconds, using local timezone)
+      return Object.entries(workoutsByDate).map(([date, count]) => {
+        // Parse date as YYYY-MM-DD and create local midnight timestamp
+        const [year, month, day] = date.split('-').map(Number)
+        const localDate = new Date(year, month - 1, day) // month is 0-indexed
+        const timestamp = Math.floor(localDate.getTime() / 1000)
+        return {
+          date: timestamp,
+          value: count
+        }
+      })
     } catch (error) {
       console.error('Failed to load workout data:', error)
       return []
@@ -48,30 +54,55 @@ const { class: className } = Astro.props
 
   // Initialize heatmap
   loadWorkoutData().then(data => {
+    console.log('Loaded workout data:', data) // Debug log
+    
+    // Test: Check if timestamp matches expected format
+    if (data.length > 0) {
+      const testDate = new Date(data[0].date * 1000)
+      console.log('First data point:', {
+        timestamp: data[0].date,
+        value: data[0].value,
+        dateString: testDate.toISOString(),
+        localDate: testDate.toLocaleDateString()
+      })
+    }
+    
+    // Detect current theme
+    const isDark = document.documentElement.classList.contains('dark') || 
+                   window.matchMedia('(prefers-color-scheme: dark)').matches
+    
     const cal = new CalHeatmap()
-    cal.paint({
-      data: {
-        source: data,
-        type: 'json',
-        x: 'date',
-        y: 'value',
-      },
-      date: { start: new Date(new Date().setMonth(new Date().getMonth() - 3)) },
-      range: 4,
-      scale: {
-        color: {
-          type: 'threshold',
-          range: ['#14432a', '#166b34', '#37a446', '#4dd05a'],
-          domain: [2, 5, 10],
+    cal.paint(
+      {
+        theme: isDark ? 'dark' : 'light',
+        itemSelector: '#workout-heatmap',
+        data: {
+          source: data,
+          x: (d) => d.date, // Timestamp in seconds
+          y: (d) => d.value, // Exercise count
         },
+        date: { start: new Date('2025-07-01') }, // Start from July 2025
+        range: 4, // Show 4 months
+        scale: {
+          color: {
+            type: 'threshold',
+            range: ['#ebedf0', '#9be9a8', '#40c463', '#30a14e', '#216e39'], // GitHub 스타일 (회색 -> 녹색)
+            domain: [1, 3, 6, 10], // 임계값: 0, 1-2, 3-5, 6-9, 10+
+          },
+        },
+        domain: {
+          type: 'month',
+          gutter: 4,
+          label: { text: 'MMM', textAlign: 'start', position: 'top' },
+        },
+        subDomain: { type: 'day', radius: 2, width: 11, height: 11, gutter: 4 },
       },
-      domain: {
-        type: 'month',
-        gutter: 4,
-        label: { text: 'MMM', textAlign: 'start', position: 'top' },
-      },
-      subDomain: { type: 'day', radius: 2, width: 11, height: 11, gutter: 4 },
-    })
+      [
+        // You can add plugins here if needed
+        // [Tooltip, { text: (date, value) => `${value} exercises on ${date}` }],
+        // [Legend, { label: 'Workouts' }],
+      ]
+    )
   })
 </script>
 

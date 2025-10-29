@@ -4,13 +4,15 @@ import About from '@/components/widgets/About.astro'
 import PostList from '@/components/widgets/PostList.astro'
 import { themeConfig } from '@/config'
 import { getSortedFilteredPosts } from '@/utils/draft'
+import WorkoutHeatmap from '@/components/widgets/WorkoutHeatmap.astro'
 
 const posts = await getSortedFilteredPosts()
 ---
 
 <IndexLayout title={themeConfig.site.title} description={themeConfig.site.description}>
-  <About />
+  
   <main>
     <PostList posts={posts} />
   </main>
+  <About />
 </IndexLayout>
