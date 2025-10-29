@@ -1,0 +1,86 @@
+---
+const { class: className } = Astro.props
+---
+
+<div id="workout-heatmap" class:list={[className]}></div>
+
+<script>
+  import CalHeatmap from 'cal-heatmap'
+  import 'cal-heatmap/cal-heatmap.css'
+
+  // Fetch and parse CSV data on client side
+  async function loadWorkoutData() {
+    try {
+      const response = await fetch('/records/workouts.csv')
+      const csvText = await response.text()
+
+      // Parse CSV manually
+      const lines = csvText.trim().split('\n')
+      const data = lines.slice(1).map(line => {
+        const values = line.split(',')
+        return {
+          date: values[0]?.replace(/"/g, '') || ''
+        }
+      })
+
+      // Group workouts by date and count exercises
+      const workoutsByDate: Record<string, number> = {}
+      data.forEach(row => {
+        if (row.date && row.date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+          const dateStr = row.date
+          if (!workoutsByDate[dateStr]) {
+            workoutsByDate[dateStr] = 0
+          }
+          workoutsByDate[dateStr]++
+        }
+      })
+
+      // Convert to cal-heatmap format
+      return Object.entries(workoutsByDate).map(([date, count]) => ({
+        date: Math.floor(new Date(date).getTime() / 1000),
+        value: count
+      }))
+    } catch (error) {
+      console.error('Failed to load workout data:', error)
+      return []
+    }
+  }
+
+  // Initialize heatmap
+  loadWorkoutData().then(data => {
+    const cal = new CalHeatmap()
+    cal.paint({
+      data: {
+        source: data,
+        type: 'json',
+        x: 'date',
+        y: 'value',
+      },
+      date: { start: new Date(new Date().setMonth(new Date().getMonth() - 3)) },
+      range: 4,
+      scale: {
+        color: {
+          type: 'threshold',
+          range: ['#14432a', '#166b34', '#37a446', '#4dd05a'],
+          domain: [2, 5, 10],
+        },
+      },
+      domain: {
+        type: 'month',
+        gutter: 4,
+        label: { text: 'MMM', textAlign: 'start', position: 'top' },
+      },
+      subDomain: { type: 'day', radius: 2, width: 11, height: 11, gutter: 4 },
+    })
+  })
+</script>
+
+<style>
+  #workout-heatmap {
+    margin: 2rem 0;
+  }
+
+  :global(.ch-domain) {
+    font-family: inherit;
+  }
+</style>
