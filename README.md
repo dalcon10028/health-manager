@@ -1,71 +1,64 @@
-# Health Manager Agent 사용 안내서
+# Chiri 🌸
 
-이 프로젝트는 AI 에이전트를 개인 헬스 트레이너처럼 활용하여, 체계적으로 건강을 관리하고 목표를 달성하기 위해 만들어졌습니다.
+![screenshot-light](public/screenshots/screenshot-light.png)
+![screenshot-dark](public/screenshots/screenshot-dark.png)
 
-## 🚀 시작하기
+Chiri is a minimal blog theme built with [Astro](https://astro.build), offering customization options while preserving its clean aesthetic.
 
-이 프로젝트의 핵심은 `AGENTS.md` 파일에 정의된 지침에 따라 AI 에이전트와 상호작용하는 것입니다. 에이전트가 지침을 올바르게 따르도록 하려면, **모든 요청 앞에 아래와 같은 문구를 붙여주세요.**
+Check the [demo](https://astro-chiri.netlify.app/) for more details.
 
-> **"AGENTS.md 지침에 따라, [요청사항] 해줘."**
+## Features
 
----
+- [x] Build with Astro
+- [x] Responsive
+- [x] Light / Dark mode
+- [x] MDX
+- [x] KaTeX
+- [x] Sitemap
+- [x] OpenGraph
+- [x] RSS
+- [ ] Pagination
 
-## 📂 디렉터리 구조
+## Getting Started
 
--   `AGENTS.md`: AI 에이전트가 따라야 할 모든 규칙, 사용자 프로필, 작업 흐름이 정의된 **가장 중요한 파일**입니다.
--   `guides/`: 에이전트가 생성하는 **일일 운동/식단 가이드**가 `YYYY-MM-DD.md` 형식으로 저장됩니다.
--   `records/`: 운동 기록, 체중 변화 등 모든 **데이터**가 CSV 파일 형식으로 저장됩니다.
-    -   `master_plan.md`: 에이전트가 생성한 장기 운동 계획표입니다.
-    -   `workouts.csv`: 매일의 운동 기록이 누적됩니다.
-    -   `weights.csv`: 체중 기록이 누적됩니다.
+1. [Fork](https://github.com/the3ash/astro-chiri/fork) this repository, or use this template to [create a new repository](https://github.com/new?template_name=astro-chiri&template_owner=the3ash).
 
----
+2. Run the following commands:
 
-## 📝 사용 방법
+   ```bash
+   git clone <your-repo-url>
 
-### Step 1: 최초 설정 (한 번만 실행)
+   cd <your-repo-name>
 
-가장 먼저 에이전트가 당신만을 위한 장기 운동 계획을 세우게 해야 합니다.
+   pnpm install
 
-**언제:** 프로젝트를 처음 시작할 때.
-**어떻게:** 아래 프롬프트를 복사하여 에이전트에게 요청하세요.
+   pnpm dev
+   ```
 
-```
-AGENTS.md 지침과 내 프로필을 바탕으로, records/master_plan.md 파일을 생성해줘.
-```
+3. Edit `src/config.ts` and `src/content/about/about.md` to your liking.
 
-**결과:** 에이전트가 당신의 프로필에 맞는 몇 주간의 운동 계획표(`master_plan.md`)를 `records` 폴더 안에 생성합니다.
+4. Use `pnpm new <title>` to create new posts, or add your posts to `src/content/posts`.
 
-### Step 2: 매일의 상호작용
+5. You need to set adapter as follows before deploying to Netlify, Vercel, or other platforms, but you can set `linkCard` to `false` in `src/config.ts` to skip this step:
+   - **Netlify**: `pnpm add @astrojs/netlify` and add `adapter: netlify()` in `astro.config.ts`.
+   - **Vercel**: `pnpm add @astrojs/vercel` and add `adapter: vercel()` in `astro.config.ts`.
+   - **Static (e.g. GitHub Pages)**: `pnpm add @astrojs/static` and add `adapter: static()` in `astro.config.ts`.
+   - Refer to [Astro Deployment Guides](https://docs.astro.build/en/guides/deploy/) for more details.
 
-이제부터는 매일 이 과정을 반복하며 에이전트를 개인 트레이너처럼 활용합니다.
+&emsp;[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start) [![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new)
 
-#### A. 운동 가이드 받기 (운동 전)
+## Commands
 
-**언제:** 운동을 가기 전, 오늘 어떤 운동을 해야 할지 궁금할 때.
-**어떻게:** 아래와 같이 간단하게 요청하세요.
+- `pnpm new <title>` - Create a new post (use `_title` for drafts)
+- `pnpm update-theme` - Update the theme to the latest version
 
-```
-AGENTS.md 지침에 따라, 오늘의 운동 가이드를 생성해줘.
-```
+## References
 
-**결과:** 에이전트가 `master_plan.md`와 최근 운동 기록을 분석하여, 피드백과 다음 운동 계획이 담긴 `guides/YYYY-MM-DD.md` 파일을 생성합니다.
+- https://paco.me/
+- https://benji.org/
+- https://shud.in/
+- https://retypeset.radishzz.cc/
 
-#### B. 운동 및 체중 기록하기 (운동 후 또는 수시로)
+## License
 
-**언제:** 운동을 마친 직후, 또는 아침에 체중을 쟀을 때.
-**어떻게:** 자연스러운 문장으로 에이전트에게 알려주세요.
-
-**운동 기록 예시:**
-
-```
-AGENTS.md 지침에 따라, 오늘 운동 기록해줘. 벤치프레스 60kg 8회 4세트, 덤벨 로우 20kg 10회 3세트 했어.
-```
-
-**체중 기록 예시:**
-
-```
-AGENTS.md 지침에 따라, 오늘 아침 몸무게 기록해줘. 73.5kg이야.
-```
-
-**결과:** 에이전트가 당신의 메시지를 해석하여 `records/workouts.csv` 또는 `records/weights.csv` 파일에 데이터를 정확한 형식으로 추가합니다.
+MIT
