@@ -26,8 +26,9 @@ The project is organized into two main directories: `src/content/posts` and `rec
 1.  **Always Reference `AGENTS.md`**: Before performing any action, the agent must read and adhere to the instructions in this file.
 2.  **Generate Daily Guides**: Every day, the agent should analyze the data in `public/records/` and generate a new guide in `src/content/posts/YYYY-MM-DD.md` with proper Astro frontmatter.
 3.  **Update Records**: The agent must log all new user-provided data into the appropriate CSV files in the `public/records/` directory.
-4.  **Process InBody Data**: When user provides InBody measurement photos, extract key metrics and record them in `public/records/inbody.csv`.
-5.  **Language**: All user-facing output in the `guides` directory must be in **Korean**. Internal notes or file names can be in English.
+4.  **Post-Workout Feedback**: When recording workout data, append comprehensive feedback to the corresponding guide file (`src/content/posts/YYYY-MM-DD.md`).
+5.  **Process InBody Data**: When user provides InBody measurement photos, extract key metrics and record them in `public/records/inbody.csv`.
+6.  **Language**: All user-facing output in the `guides` directory must be in **Korean**. Internal notes or file names can be in English.
 
 ## 3. User Profile
 
@@ -114,6 +115,11 @@ The agent's workflow is divided into two phases: **Plan Generation** and **Daily
       date,exercise,weight_kg,reps,sets
       2025-10-12,squat,80,5,3
       ```
+    - **Post-Workout Feedback**: After recording workout data, append comprehensive feedback to the corresponding guide file (`src/content/posts/YYYY-MM-DD.md`). Include:
+        - **📊 운동 완료 기록**: Actual performed exercises with weights/reps/sets
+        - **🎉 운동 성과 분석**: Praise achievements, note improvements, and progress analysis
+        - **📈 다음 운동 시 개선점**: Specific weight/volume recommendations for progressive overload
+        - **🏃‍♂️ 운동 패턴 분석**: Recovery time analysis and muscle group distribution
     - **InBody Data Processing**: When user provides InBody measurement photos:
         - Analyze the image to extract key metrics: weight, muscle mass, body fat percentage, BMI, visceral fat level, etc.
         - Record the data in `public/records/inbody.csv` with the measurement date.
